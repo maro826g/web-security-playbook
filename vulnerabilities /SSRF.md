@@ -1,3 +1,23 @@
+what’s ssrf:
+Server-side request forgery is a web security vulnerability that allows an attacker to cause the server-side application to make requests to an unintended location
+
+In a typical SSRF attack, the attacker might cause the server to make a connection to internal-only services within the organization's infrastructure. In other cases, they may be able to force the server to connect to arbitrary external systems. This could leak sensitive data, such as authorization credentials.
+
+### what’s the highest impact of ssrf :-
+
+**Remote Code Execution (RCE) via Internal Services**
+
+how?
+
+Many internal services, like **Redis** or **Memcached**, are "trust-based." They don't have passwords because they assume only the server can talk to them locally.
+so first you need to see if port 6379  is opened by passing this url `gopher://127.0.0.1:[port]`
+
+then after that u can use a tool like Gopherus to plant your reverse shell
+
+reference:
+https://www.resecurity.com/ar/blog/article/blind-ssrf-to-rce-vulnerability-exploitation
+
+
 so this attack happens when an attacker can make the **server itself** perform requests that the attacker wouldn’t normally be authorized to make
 
 for example if there's a functionality to check the stock for a product so it has a request look like this 
