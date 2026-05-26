@@ -1,3 +1,17 @@
+# API Testing & Exploitation
+
+**Overview**
+Welcome to the API testing playbook. Modern web applications rely heavily on APIs to communicate, fetch data, and execute backend logic, making them a massive and lucrative attack surface. When APIs lack strict input validation, proper access controls, or expose their internal logic, they can be weaponized to completely compromise an application. 
+
+This document serves as a practical guide to understanding, mapping, and exploiting API vulnerabilities. It walks through real-world methodologies and detailed solutions for the PortSwigger Web Security Academy API labs.
+
+**What We Cover in This File:**
+* **API Reconnaissance:** Strategies for mapping the attack surface, dissecting HTTP requests (methods, content types), and finding hidden developer documentation like Swagger or OpenAPI JSONs.
+* **Hidden Endpoints & Parameters:** Using tools like Burp Intruder and Param Miner to brute-force and discover undocumented paths and parameters that alter application behavior.
+* **Mass Assignment (Auto-binding):** How to spot and exploit frameworks that automatically bind user input to internal object fields, allowing for privilege escalation and unauthorized modifications (like zeroing out cart prices).
+* **Server-Side Parameter Pollution (Query Strings):** Manipulating internal API requests by injecting (`%26`) or truncating (`%23`) parameters to override server-side logic and leak sensitive data.
+* **Server-Side Parameter Pollution (REST URLs):** Leveraging path traversal sequences (`../`) within RESTful API endpoints to break out of intended execution paths and access internal admin directories.
+* 
 first we need to know some informations — **API recon** 
 
 - **goal:** gather info about the API to map attack surface.
