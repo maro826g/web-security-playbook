@@ -1,3 +1,19 @@
+# Access Control Vulnerabilities
+
+**Overview**
+Access control (or authorization) dictates who is allowed to do what within a web application. While authentication verifies a user's identity, access control verifies their permissions. When these controls are broken, missing, or poorly implemented, attackers can bypass restrictions to access sensitive data, modify other users' accounts, or completely take over the application. Broken Access Control frequently ranks at the very top of the OWASP Top 10 because it relies heavily on complex, custom human logic rather than easily automated security checks.
+
+This document breaks down how to identify and exploit flawed authorization mechanisms, covering everything from simple parameter tampering to complex multi-step logic bypasses.
+
+**What We Cover in This File:**
+* **Access Control Foundations:** Understanding security models like RBAC, MAC, and DAC, and the differences between Vertical, Horizontal, and Context-Dependent access controls.
+* **Privilege Escalation Paths:** Methodologies for escalating privileges vertically (e.g., normal user to admin) and horizontally (e.g., accessing another standard user's data).
+* **Information Disclosure & Hidden Panels:** Finding unlinked administrative interfaces through `robots.txt`, client-side JavaScript, and source code analysis.
+* **Parameter & Method Manipulation:** Bypassing authorization by tampering with hidden fields (e.g., `Admin=true`), injecting `roleid` parameters, and swapping HTTP methods (like changing `POST` to `GET`) to evade poorly configured backend checks.
+* **Routing & Header Bypasses:** Tricking application routers into granting access to blocked URLs by exploiting headers like `X-Original-URL` or manipulating `Referer`-based trust controls.
+* **Insecure Direct Object References (IDOR):** Exploiting predictable user IDs and leaked GUIDs to access unauthorized resources, such as private user profiles or chat transcripts.
+* **Multi-Step Logic Flaws:** Exploiting workflows where authorization is only checked on the initial request, leaving secondary confirmation steps completely unprotected.
+
 first we need to know some informations
 
 **authentication**: confirms that the user is who they say they are
