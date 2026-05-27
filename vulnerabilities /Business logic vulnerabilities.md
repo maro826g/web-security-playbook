@@ -13,7 +13,7 @@ Because these vulnerabilities depend entirely on the specific context of the app
 * **Discount & State Abuse (Macros):** Identifying domain-specific flaws to stack coupons, and using Burp Suite Macros to automate complex, multi-request workflows (like infinite store credit generation).
 * **Encryption Oracles:** Weaponizing application error messages that reflect decrypted data to crack and forge administrative session tokens (e.g., `username:timestamp` cookies).
 * **Email Parsing Discrepancies (Splitting the Email Atom):** Exploiting the difference between how frontend validators and backend mail servers (like Sendmail/Postfix) parse addresses. Techniques include using UUCP routing (`!`), Unicode overflows, and Encoded-Word (`=?utf-7?q?...?=`) to bypass strict domain filters and route internal emails to an exploit server.
-
+---
 first lab 
 
 1) login to wiener account 
