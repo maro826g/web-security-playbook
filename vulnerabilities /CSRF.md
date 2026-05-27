@@ -1,9 +1,14 @@
 # Cross-Site Request Forgery (CSRF)
 
-**Overview**
-Cross-Site Request Forgery (CSRF) is a vulnerability that forces an authenticated user to unintentionally execute malicious actions on a web application. Because the browser automatically includes ambient credentials (like session cookies) with these forged requests, the application treats them as legitimate. A successful CSRF attack can result in unauthorized financial transfers, account takeovers via email or password changes, and even full system compromise if the victim holds administrative privileges. 
+**Overview** Cross-Site Request Forgery (CSRF) is a vulnerability that forces an authenticated user to unintentionally execute malicious actions on a web application. Because the browser automatically includes ambient credentials (like session cookies) with these forged requests, the application treats them as legitimate. 
 
 This document details the mechanics of CSRF, how to identify weak protections, and the methodologies to bypass common defensive implementations.
+
+**Impact**
+In a successful CSRF attack, the attacker causes the victim to carry out an action unintentionally, such as:
+* **Account Takeover:** Changing the email address or password on their account.
+* **Financial Loss:** Performing unauthorized funds transfers.
+* **Full System Compromise:** If the victim has a privileged role (Admin), the attacker can take full control of the application's data and functionality.
 
 **What We Cover in This File:**
 * **Basic CSRF Exploitation:** Crafting automated Proof of Concept (PoC) scripts using hidden forms and auto-submitting image tags to hijack state-changing requests.
@@ -14,16 +19,7 @@ This document details the mechanics of CSRF, how to identify weak protections, a
 * **Referer Header Bypasses:** Defeating Referer-based validation by stripping the header via `<meta name="referrer" content="never">` or forging valid domain strings within the URL path using `history.pushState`.
 * **Prevention & Mitigation:** Best practices for securely generating, transmitting, and validating anti-CSRF tokens to effectively neutralize these attacks.
 
-**Impact**:
-
-In a successful CSRF attack, the attacker causes the victim to carry out an action unintentionally, such as:
-
-**Account Takeover**: Changing the email address or password on their account.
-
-**Financial Loss**: Performing unauthorized funds transfers.
-
-**Full System Compromise**: If the victim has a privileged role (Admin), the attacker can take full control of the application's data and functionality.
-
+---
 lets start solving portswigger labs:
 
 first lab:
