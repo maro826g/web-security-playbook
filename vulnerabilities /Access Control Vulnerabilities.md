@@ -13,7 +13,7 @@ This document breaks down how to identify and exploit flawed authorization mecha
 * **Routing & Header Bypasses:** Tricking application routers into granting access to blocked URLs by exploiting headers like `X-Original-URL` or manipulating `Referer`-based trust controls.
 * **Insecure Direct Object References (IDOR):** Exploiting predictable user IDs and leaked GUIDs to access unauthorized resources, such as private user profiles or chat transcripts.
 * **Multi-Step Logic Flaws:** Exploiting workflows where authorization is only checked on the initial request, leaving secondary confirmation steps completely unprotected.
-
+---
 first we need to know some informations
 
 **authentication**: confirms that the user is who they say they are
