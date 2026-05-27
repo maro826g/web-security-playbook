@@ -1,3 +1,24 @@
+# Server-Side Request Forgery (SSRF)
+
+**Overview**
+Server-Side Request Forgery (SSRF) is a web vulnerability that allows an attacker to manipulate a server-side application into making HTTP requests to an unintended, and often restricted, domain. Instead of attacking the server directly, the attacker uses the server as a proxy to bypass firewalls and network segmentation. This effectively grants the attacker the same level of trust and access that the compromised server possesses on the internal network.
+
+**Impact**
+SSRF is a highly critical vulnerability that can pivot a completely external attack into a devastating internal compromise:
+* **Remote Code Execution (RCE):** Interacting with internal, "trust-based" infrastructure (like Redis or Memcached on port 6379) or exploiting vulnerable internal legacy services (e.g., via Shellshock) to execute arbitrary commands.
+* **Unauthorized Administrative Access:** Reaching internal-only administrative panels (e.g., `http://localhost/admin`) to arbitrarily delete users, alter configurations, or shut down systems.
+* **Internal Network Reconnaissance:** Port scanning internal IP ranges to map out hidden infrastructure, microservices, and databases that are shielded from the public internet.
+
+**What We Cover in This File:**
+* **Basic SSRF Exploitation:** Manipulating API parameters (like `stockApi`) to target `localhost` or specific internal IP addresses to access restricted administrative functions.
+* **Bypassing Blacklist Filters:** Evading basic input validation using alternative IP representations (e.g., `127.1`, `2130706433`), double URL encoding, and spoofed domain resolutions.
+* **Bypassing Whitelist Filters:** Tricking strict URL parsers into accepting malicious endpoints by utilizing embedded credentials (`@`), URL fragments (`#`), and DNS hierarchy manipulation.
+* **Chaining with Open Redirects:** Leveraging open redirection vulnerabilities to completely bypass strict SSRF input filters and cleanly route malicious requests into the internal network.
+* **Blind SSRF & OAST:** Detecting silent SSRF vulnerabilities where the response isn't reflected by using Out-of-Band (OOB) techniques via Burp Collaborator (e.g., poisoning `Referer` headers).
+* **Blind SSRF to RCE (Shellshock):** Weaponizing blind SSRF by injecting Shellshock payloads into the `User-Agent` header while simultaneously forcing the server to connect to a vulnerable internal machine.
+
+---
+
 what’s ssrf:
 Server-side request forgery is a web security vulnerability that allows an attacker to cause the server-side application to make requests to an unintended location
 
@@ -284,6 +305,6 @@ Accept-Encoding: gzip, deflate, br
 Priority: u=0, i
 ```
 
-1. send to intruder and fuzz the last octect to solve the lab
+4. send to intruder and fuzz the last octect to solve the lab
 
-2. after fuzzing go collaborator and click pull now and get the admin name and submit it
+5. after fuzzing go collaborator and click pull now and get the admin name and submit it
