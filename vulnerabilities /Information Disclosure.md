@@ -1,9 +1,25 @@
-information disclosure is when a webiste leaks a sensitive information it could include :
+# Information Disclosure
 
-- Data about other users, such as usernames or financial information
-- Sensitive commercial or business data
-- Technical details about the website and its infrastructure
+**Overview**
+Information disclosure occurs when a web application unintentionally reveals sensitive data to users. This data can range from technical details about the backend infrastructure and source code to highly sensitive PII (Personally Identifiable Information), financial records, or hardcoded credentials. While some disclosures might seem benign (like revealing an Apache server version), attackers use this information to map the attack surface, identify specific software vulnerabilities, and chain together complex exploits.
 
+**Impact**
+Information disclosure is often the crucial first step in a larger attack chain. The impact includes:
+* **Attack Surface Mapping:** Exposing hidden directories, debugging endpoints, or framework versions, which attackers use to tailor specific exploits.
+* **Credential & Secret Leakage:** Accidental exposure of hardcoded passwords, API keys, and cryptographic secrets in source code or backup files, leading to immediate system compromise.
+* **Authentication & Authorization Bypass:** Leaking internal logic (like custom headers) that can be manipulated to spoof IP addresses or bypass access controls.
+* **Data Breaches:** Exposing other users' private data (e.g., via verbose error messages or insecure directory listings).
+
+**What We Cover in This File:**
+* **Error Message Verbosity:** Exploiting detailed error messages (often triggered by unexpected input) to reveal framework versions, database structures, or internal file paths.
+* **Debugging & Diagnostic Data:** Identifying and accessing exposed debugging pages (like `phpinfo()`) or logs that leak environment variables and secret keys.
+* **Publicly Accessible Developer Files:** Leveraging files intended for web crawlers (`/robots.txt`, `/sitemap.xml`) or finding forgotten developer comments via source code analysis.
+* **Backup Files & Source Code Leakage:** Discovering unexecuted backup files (e.g., `file.php~`, `.bak`) to read raw source code and extract hardcoded database credentials.
+* **Insecure Configurations (HTTP TRACE):** Exploiting insecurely enabled HTTP methods like `TRACE` to discover hidden internal routing logic (e.g., `X-Custom-IP-Authorization`) and bypass IP-based access controls.
+* **Version Control History (.git Exposure):** Downloading exposed `.git` directories using tools like `wget`, and parsing the commit history to recover deleted secrets and passwords.
+* **Prevention & Mitigation:** Best practices for securing third-party configs, auditing code, and ensuring generic error handling in production environments.
+
+---
 how information disclosure happen :
 
 **Failure to remove internal content from public content: for example comments in the code
