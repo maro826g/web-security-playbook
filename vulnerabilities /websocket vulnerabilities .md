@@ -1,3 +1,23 @@
+# WebSockets Vulnerabilities
+
+**Overview**
+WebSockets provide a full-duplex, persistent communication channel over a single TCP connection, making them ideal for real-time applications like live chats, financial tickers, and collaborative editing. Because communication does not follow the traditional HTTP request/response model after the initial handshake, standard web security mechanisms (like WAFs or standard CSRF protections) often fail to inspect or secure WebSocket traffic properly. This creates a unique attack surface for real-time exploitation.
+
+**Impact**
+Vulnerabilities in WebSocket implementations can lead to immediate and widespread compromise:
+* **Real-Time Data Exfiltration:** Stealing highly sensitive, live data streams (like private chat histories or session tokens) via Cross-Site WebSocket Hijacking (CSWSH).
+* **Mass Client-Side Compromise:** Injecting Cross-Site Scripting (XSS) payloads into a WebSocket stream, which instantly broadcast to and execute in the browsers of all currently connected users.
+* **Security Control Evasion:** Bypassing traditional HTTP-based IP blocking, rate limiting, and input filters by exploiting the persistent nature of the connection or spoofing handshake headers.
+
+**What We Cover in This File:**
+* **WebSocket Basics:** Understanding the two-way, instant communication model.
+* **WebSocket XSS:** Injecting malicious payloads directly into live data streams.
+* **Evading IP Bans & Filters:** Bypassing dedicated attack detection mechanisms using `X-Forwarded-For` header injection and payload obfuscation.
+* **Cross-Site WebSocket Hijacking (CSWSH):** Weaponizing CSRF-like flaws in the WebSocket handshake to silently exfiltrate a victim's private chat history to a Burp Collaborator server.
+* **Prevention & Mitigation:** Best practices for securing WebSocket handshakes, using `wss://`, and enforcing strict bidirectional data validation.
+
+---
+
 **WebSocket** is a way to create a **constant two-way connection** between the browser and the server. It lets them **send data back and forth instantly** without needing to make new requests every time — making apps **faster and more real-time**. used in live chats
 
 1. send a message intercept it and modify to message to 
