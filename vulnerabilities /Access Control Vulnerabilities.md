@@ -1,9 +1,13 @@
 # Access Control Vulnerabilities
 
 **Overview**
-Access control (or authorization) dictates who is allowed to do what within a web application. While authentication verifies a user's identity, access control verifies their permissions. When these controls are broken, missing, or poorly implemented, attackers can bypass restrictions to access sensitive data, modify other users' accounts, or completely take over the application. Broken Access Control frequently ranks at the very top of the OWASP Top 10 because it relies heavily on complex, custom human logic rather than easily automated security checks.
+Access control (or authorization) dictates who is allowed to do what within a web application. While authentication verifies a user's identity, access control verifies their permissions. When these controls are broken, missing, or poorly implemented, attackers can bypass restrictions to access sensitive data, modify other users' accounts, or completely take over the application. 
 
-This document breaks down how to identify and exploit flawed authorization mechanisms, covering everything from simple parameter tampering to complex multi-step logic bypasses.
+**Impact**
+Broken access controls consistently rank at the top of web vulnerabilities because the impact is absolute:
+* **Unauthorized Information Disclosure:** Accessing other users' private data, chat logs, or financial records (Horizontal Privilege Escalation).
+* **Total Application Compromise:** Standard users gaining access to administrative dashboards to delete users, modify site configurations, or extract databases (Vertical Privilege Escalation).
+* **Business Logic Subversion:** Performing actions out of order, like modifying an order after payment has been processed.
 
 **What We Cover in This File:**
 * **Access Control Foundations:** Understanding security models like RBAC, MAC, and DAC, and the differences between Vertical, Horizontal, and Context-Dependent access controls.
@@ -11,8 +15,9 @@ This document breaks down how to identify and exploit flawed authorization mecha
 * **Information Disclosure & Hidden Panels:** Finding unlinked administrative interfaces through `robots.txt`, client-side JavaScript, and source code analysis.
 * **Parameter & Method Manipulation:** Bypassing authorization by tampering with hidden fields (e.g., `Admin=true`), injecting `roleid` parameters, and swapping HTTP methods (like changing `POST` to `GET`) to evade poorly configured backend checks.
 * **Routing & Header Bypasses:** Tricking application routers into granting access to blocked URLs by exploiting headers like `X-Original-URL` or manipulating `Referer`-based trust controls.
-* **Insecure Direct Object References (IDOR):** Exploiting predictable user IDs and leaked GUIDs to access unauthorized resources, such as private user profiles or chat transcripts.
+* **Insecure Direct Object References (IDOR):** Exploiting predictable user IDs and leaked GUIDs to access unauthorized resources.
 * **Multi-Step Logic Flaws:** Exploiting workflows where authorization is only checked on the initial request, leaving secondary confirmation steps completely unprotected.
+
 ---
 first we need to know some informations
 
