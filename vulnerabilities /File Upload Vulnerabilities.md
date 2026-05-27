@@ -1,3 +1,22 @@
+# File Upload Vulnerabilities
+
+**Overview**
+File upload functionalities are ubiquitous on the modern web, from profile pictures to document portals. However, when an application fails to strictly validate the name, type, contents, or destination of an uploaded file, it opens the door to severe attacks. A file upload vulnerability allows an attacker to upload a malicious payload (such as a PHP web shell) and trick the server into executing it, turning a simple image upload feature into a direct vector for total system compromise.
+
+**Impact**
+Unrestricted file uploads represent one of the most critical risks in web security. A successful exploit can lead to:
+* **Remote Code Execution (RCE):** Executing arbitrary operating system commands directly on the backend server.
+* **Full Server Takeover:** Gaining persistent access, escalating privileges, and pivoting to internal networks.
+* **Website Defacement & Phishing:** Hosting malicious content or malware directly on a trusted domain.
+
+**What We Cover in This File:**
+* **Content-Type Restriction Bypasses:** Evading basic filters by manually manipulating the `Content-Type` header (e.g., changing `application/octet-stream` to `image/png`) using an intercepting proxy.
+* **Directory Traversal (Escaping Execution Restrictions):** Bypassing secure `uploads/` directories—where script execution is disabled—by injecting URL-encoded path traversal sequences (e.g., `%2e%2e%2f`) into the filename to drop the shell in an executable directory.
+* **Blacklist Evasion Techniques:** A comprehensive breakdown of in-the-wild tricks to bypass extension blacklists, including case sensitivity (`.pHp`), double extensions (`.php.jpg`), trailing characters, null byte injections (`%00`), and non-recursive stripping (`.p.phphp`).
+* **Obfuscated File Extensions:** Tricking backend validation logic by masking the true nature of the executable payload.
+
+---
+
 lab2: **Web shell upload via Content-Type restriction bypass**
 
 1)first made an empty file named it exploit.php
