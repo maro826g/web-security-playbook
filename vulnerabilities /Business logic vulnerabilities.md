@@ -1,18 +1,23 @@
 # Business Logic Vulnerabilities
 
 **Overview**
-Business logic vulnerabilities are flaws in the design and implementation of an application's intended behavior. Unlike technical vulnerabilities (like SQLi or XSS) that exploit the syntax of a request, logic flaws exploit the *rules* of the application. Attackers use legitimate application features in unexpected ways—skipping steps, manipulating sequences, or providing edge-case inputs—to achieve malicious outcomes like stealing funds, bypassing 2FA, or escalating privileges. 
+Business logic vulnerabilities are flaws in the design and implementation of an application's intended behavior. Unlike technical vulnerabilities (like SQLi or XSS) that exploit the syntax of a request, logic flaws exploit the *rules* of the application. Attackers use legitimate application features in unexpected ways—skipping steps, manipulating sequences, or providing edge-case inputs—to achieve malicious outcomes.
 
-Because these vulnerabilities depend entirely on the specific context of the application (e.g., e-commerce discount rules, custom password reset flows), they are notoriously difficult for automated scanners to detect and require a creative, manual testing approach.
+**Impact**
+Because these flaws target the core business purpose of the app, the impact is highly domain-specific and often severe:
+* **Financial Fraud & Theft:** Infinite generation of store credit, applying multiple conflicting discounts, or bypassing payment gateways entirely.
+* **Security Control Bypass:** Evading multi-factor authentication (2FA) or password reset requirements by manipulating the intended step-by-step user flow.
+* **Administrative Hijacking:** Tricking backend parsers (like mail servers) into routing administrative password resets to attacker-controlled domains.
 
 **What We Cover in This File:**
 * **E-Commerce & Cart Manipulation:** Exploiting trust in client-side data to modify prices, injecting negative quantities to zero-out cart totals, and forcing free checkouts.
 * **Authentication & 2FA Bypasses:** Hijacking OTP verifications by swapping target parameters, and exploiting flawed multi-step processes by forcibly navigating to authenticated pages before 2FA is completed.
 * **Input Truncation & State Inconsistencies:** Weaponizing database length limits (e.g., 255 characters) to truncate email addresses and hijack admin domains, and exploiting differences between pre-registration and post-registration validation rules.
 * **Parameter Deletion:** Bypassing security checks (like current-password requirements) simply by removing the parameter from the HTTP request.
-* **Discount & State Abuse (Macros):** Identifying domain-specific flaws to stack coupons, and using Burp Suite Macros to automate complex, multi-request workflows (like infinite store credit generation).
+* **Discount & State Abuse (Macros):** Identifying domain-specific flaws to stack coupons, and using Burp Suite Macros to automate complex workflows (like infinite store credit generation).
 * **Encryption Oracles:** Weaponizing application error messages that reflect decrypted data to crack and forge administrative session tokens (e.g., `username:timestamp` cookies).
-* **Email Parsing Discrepancies (Splitting the Email Atom):** Exploiting the difference between how frontend validators and backend mail servers (like Sendmail/Postfix) parse addresses. Techniques include using UUCP routing (`!`), Unicode overflows, and Encoded-Word (`=?utf-7?q?...?=`) to bypass strict domain filters and route internal emails to an exploit server.
+* **Email Parsing Discrepancies (Splitting the Email Atom):** Exploiting the difference between how frontend validators and backend mail servers parse addresses. Techniques include using UUCP routing (`!`), Unicode overflows, and Encoded-Word (`=?utf-7?q?...?=`).
+
 ---
 first lab 
 
