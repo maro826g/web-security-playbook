@@ -1,3 +1,23 @@
+# JSON Web Tokens (JWT) Vulnerabilities
+
+**Overview**
+JSON Web Tokens (JWT) are a stateless, scalable standard used extensively for modern web authentication and secure information exchange. A JWT consists of three base64url-encoded parts: a Header (metadata and algorithm), a Payload (user claims and session data), and a Signature (cryptographic proof of integrity). Because JWTs store session state directly on the client side rather than in a backend database, their security relies entirely on robust signature validation. When developers misconfigure JWT libraries, trust user-supplied headers, or fail to properly enforce cryptographic checks, attackers can forge or alter tokens to impersonate any user on the system.
+
+**Impact**
+Compromising a JWT implementation completely shatters an application's authentication and authorization boundaries. A successful attack allows you to:
+* **Arbitrary Account Takeover:** Modify payload claims (like changing `"sub": "wiener"` to `"sub": "administrator"`) to instantly hijack privileged accounts.
+* **Vertical Privilege Escalation:** Grant yourself administrative rights without needing a password or valid credentials.
+* **Complete Authentication Bypass:** Evade login mechanisms entirely by forging mathematically valid session tokens out of thin air.
+
+**What We Cover in This File:**
+* **JWT Anatomy & Cryptography:** Understanding the difference between JWS (Integrity) and JWE (Confidentiality), and decoding the Header, Payload, and Signature structure.
+* **The "None" Algorithm Bypass:** Exploiting misconfigured backend libraries by changing the `alg` header to `none` and stripping the signature to forge trusted tokens.
+* **Arbitrary Signature Acceptance:** Identifying endpoints that blindly trust the payload and fail to validate the signature at all.
+* **Brute-Forcing Weak Secret Keys:** Offline cracking of weak symmetric keys (e.g., `HS256` keys using Hashcat) to generate perfectly valid, locally signed forged tokens.
+* **Header Parameter Injections (`jwk` & `jku`):** Forcing the backend to use an attacker-controlled cryptographic key by injecting an embedded JSON Web Key (`jwk`) or pointing the `jku` (JWK Set URL) parameter to an external malicious server.
+* **Path Traversal via the `kid` Parameter:** Exploiting the Key ID (`kid`) header parameter using directory traversal sequences to force the server into verifying tokens against predictable, empty files (like pointing it to `/dev/null` and signing with an empty `AA==` Base64 key).
+
+---
 JSON Web Tokens (JWT)
 
 - used for authentication and authorization and information exchange
@@ -54,8 +74,6 @@ HMACSHA256
 base64urlEncode(header+ “.” + base64UrlEncode(payload), secret)
 
 )
-
-![image.png](attachment:e068a916-34f0-4ff5-86ad-a36b334f7a2f:image.png)
 
 ### The None Algorithm Vulnerability
 
