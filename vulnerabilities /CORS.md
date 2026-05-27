@@ -12,7 +12,7 @@ This document outlines how to identify and exploit common CORS misconfigurations
 * **Protocol Trust & MITM:** Discovering vulnerabilities where a secure HTTPS site trusts unencrypted `http://` origins, opening the door for TLS stripping and Man-in-the-Middle attacks.
 * **Chaining XSS with CORS:** Leveraging a Cross-Site Scripting (XSS) vulnerability on a trusted, poorly-secured subdomain to bypass strict CORS policies on the main application and steal sensitive data.
 * **Origin Fuzzing Methodology:** A quick testing checklist for manipulating the `Origin` header during reconnaissance.
-
+---
 What is CORS (cross-origin resource sharing)?
 Cross-origin resource sharing (CORS) is a browser mechanism which enables controlled access to resources located outside of a given domain
 
