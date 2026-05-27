@@ -1,10 +1,22 @@
-Cross-Site Request Forgery (CSRF)
+# Cross-Site Request Forgery (CSRF)
+
 **Overview**
-Cross-site request forgery (also known as CSRF) is a web security vulnerability that allows an attacker to force a user to perform actions that they do not intend to perform.
+Cross-Site Request Forgery (CSRF) is a vulnerability that forces an authenticated user to unintentionally execute malicious actions on a web application. Because the browser automatically includes ambient credentials (like session cookies) with these forged requests, the application treats them as legitimate. A successful CSRF attack can result in unauthorized financial transfers, account takeovers via email or password changes, and even full system compromise if the victim holds administrative privileges. 
+
+This document details the mechanics of CSRF, how to identify weak protections, and the methodologies to bypass common defensive implementations.
+
+**What We Cover in This File:**
+* **Basic CSRF Exploitation:** Crafting automated Proof of Concept (PoC) scripts using hidden forms and auto-submitting image tags to hijack state-changing requests.
+* **Token Validation Bypasses:** Circumventing weak CSRF token defenses by changing HTTP methods (e.g., swapping `POST` to `GET`), deleting the token parameter entirely, or substituting tokens from other user accounts.
+* **Token Hijacking & Header Injection:** Exploiting applications that fail to tie CSRF tokens to specific user sessions, and leveraging HTTP Header Injection to force a victim's browser to use an attacker's `csrfKey`.
+* **SameSite Cookie Evasion:** Understanding the differences between `Strict`, `Lax`, and `None` SameSite policies, and bypassing them using method overriding (e.g., `_method=POST`) or chaining with DOM-based redirects.
+* **Chaining Vulnerabilities for CSRF:** Leveraging Cross-Site Scripting (XSS) on sibling subdomains to execute Cross-Site WebSocket Hijacking (CSWSH) and bypass strict site-based cookie restrictions.
+* **Referer Header Bypasses:** Defeating Referer-based validation by stripping the header via `<meta name="referrer" content="never">` or forging valid domain strings within the URL path using `history.pushState`.
+* **Prevention & Mitigation:** Best practices for securely generating, transmitting, and validating anti-CSRF tokens to effectively neutralize these attacks.
 
 **Impact**:
-In a successful CSRF attack, the attacker causes the victim to carry out an action unintentionally, such as:
 
+In a successful CSRF attack, the attacker causes the victim to carry out an action unintentionally, such as:
 
 **Account Takeover**: Changing the email address or password on their account.
 
