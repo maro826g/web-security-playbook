@@ -11,7 +11,7 @@ This document serves as a practical guide to understanding, mapping, and exploit
 * **Mass Assignment (Auto-binding):** How to spot and exploit frameworks that automatically bind user input to internal object fields, allowing for privilege escalation and unauthorized modifications (like zeroing out cart prices).
 * **Server-Side Parameter Pollution (Query Strings):** Manipulating internal API requests by injecting (`%26`) or truncating (`%23`) parameters to override server-side logic and leak sensitive data.
 * **Server-Side Parameter Pollution (REST URLs):** Leveraging path traversal sequences (`../`) within RESTful API endpoints to break out of intended execution paths and access internal admin directories.
-* 
+---
 first we need to know some informations — **API recon** 
 
 - **goal:** gather info about the API to map attack surface.
