@@ -1,3 +1,18 @@
+# Cross-Origin Resource Sharing (CORS) Vulnerabilities
+
+**Overview**
+Cross-Origin Resource Sharing (CORS) is a browser mechanism designed to securely relax the Same-Origin Policy (SOP), enabling controlled access to resources located outside of a given domain. However, when CORS policies are misconfigured—often for developer convenience or testing—they can create massive security holes. If a server blindly trusts attacker-controlled origins and allows credentials, malicious websites can force a victim's browser to silently fetch and exfiltrate sensitive account data, API keys, or private session details.
+
+This document outlines how to identify and exploit common CORS misconfigurations, from basic origin reflections to complex XSS exploit chains.
+
+**What We Cover in This File:**
+* **Arbitrary Origin Reflection:** Testing whether an application blindly trusts and reflects any domain supplied in the `Origin` header alongside `Access-Control-Allow-Credentials: true`.
+* **The Null Origin Bypass:** Exploiting configurations that whitelist the `null` origin by using sandboxed `<iframes>` to trick the browser into executing XHR requests without a standard origin.
+* **Flawed Origin Parsing:** Bypassing whitelist validation by exploiting prefix or suffix matching errors (e.g., tricking the backend into accepting `test-trusted-subdomain.net` instead of just `trusted-subdomain.net`).
+* **Protocol Trust & MITM:** Discovering vulnerabilities where a secure HTTPS site trusts unencrypted `http://` origins, opening the door for TLS stripping and Man-in-the-Middle attacks.
+* **Chaining XSS with CORS:** Leveraging a Cross-Site Scripting (XSS) vulnerability on a trusted, poorly-secured subdomain to bypass strict CORS policies on the main application and steal sensitive data.
+* **Origin Fuzzing Methodology:** A quick testing checklist for manipulating the `Origin` header during reconnaissance.
+
 What is CORS (cross-origin resource sharing)?
 Cross-origin resource sharing (CORS) is a browser mechanism which enables controlled access to resources located outside of a given domain
 
