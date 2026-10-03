@@ -36,3 +36,5 @@ Not written up yet: SQL injection, authentication, path traversal, XXE, insecure
 ## Author
 
 Amr Khaled, application security and CTF (team G4mra).
+
+[LinkedIn](https://www.linkedin.com/in/amrk1/)
