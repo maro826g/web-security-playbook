@@ -8,22 +8,25 @@ My notes and lab walkthroughs from the [PortSwigger Web Security Academy](https:
 
 | Topic | Note |
 |---|---|
-| Cross-Site Scripting & CSP (including CSP bypass and dangling markup) | [xss.md](vulnerabilities/xss.md) |
-| Cross-Site Request Forgery | [csrf.md](vulnerabilities/csrf.md) |
-| CORS misconfigurations | [cors.md](vulnerabilities/cors.md) |
-| Server-Side Request Forgery | [ssrf.md](vulnerabilities/ssrf.md) |
-| Server-Side Template Injection | [ssti.md](vulnerabilities/ssti.md) |
-| OS Command Injection | [command-injection.md](vulnerabilities/command-injection.md) |
-| Access Control | [access-control.md](vulnerabilities/access-control.md) |
-| Business Logic | [business-logic.md](vulnerabilities/business-logic.md) |
-| Race Conditions (including Turbo Intruder scripting) | [race-conditions.md](vulnerabilities/race-conditions.md) |
-| JWT attacks | [jwt.md](vulnerabilities/jwt.md) |
-| File Upload | [file-upload.md](vulnerabilities/file-upload.md) |
-| Information Disclosure | [information-disclosure.md](vulnerabilities/information-disclosure.md) |
-| API Testing | [api-testing.md](vulnerabilities/api-testing.md) |
-| WebSockets | [websockets.md](vulnerabilities/websockets.md) |
-| Web LLM attacks | [web-llm-attacks.md](vulnerabilities/web-llm-attacks.md) |
+| Cross-Site Scripting & CSP (including CSP bypass and dangling markup) | [XSS](vulnerabilities%20/XSS.md) |
+| Cross-Site Request Forgery | [CSRF](vulnerabilities%20/CSRF.md) |
+| CORS misconfigurations | [CORS](vulnerabilities%20/CORS.md) |
+| Server-Side Request Forgery | [SSRF](vulnerabilities%20/SSRF.md) |
+| Server-Side Template Injection | [SSTI](vulnerabilities%20/SSTI.md) |
+| OS Command Injection | [Command Injection](vulnerabilities%20/Command%20Injection.md) |
+| Access Control | [Access Control Vulnerabilities](vulnerabilities%20/Access%20Control%20Vulnerabilities.md) |
+| Business Logic | [Business logic vulnerabilities](vulnerabilities%20/Business%20logic%20vulnerabilities.md) |
+| Race Conditions (including Turbo Intruder scripting) | [Race Condition](vulnerabilities%20/Race%20Condition.md) |
+| JWT attacks | [JWT's Vulnerabilities](vulnerabilities%20/JWT%27s%20Vulnerabilities.md) |
+| File Upload | [File Upload Vulnerabilities](vulnerabilities%20/File%20Upload%20Vulnerabilities.md) |
+| Information Disclosure | [Information Disclosure](vulnerabilities%20/Information%20Disclosure.md) |
+| API Testing | [API testing](vulnerabilities%20/API%20testing.md) |
+| WebSockets | [Websocket vulnerabilities](vulnerabilities%20/Websocket%20vulnerabilities%20.md) |
+| Web LLM attacks | [Web LLM attacks](vulnerabilities%20/Web%20LLM%E2%80%99s%20attacks.md) |
 
+## Roadmap
+
+Not written up yet: SQL injection, authentication, path traversal, XXE, insecure deserialization, OAuth, HTTP request smuggling, host header attacks, web cache poisoning, clickjacking, NoSQL injection, prototype pollution.
 
 ## Related work
 
